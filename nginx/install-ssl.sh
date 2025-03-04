@@ -1,4 +1,5 @@
 
+# https://www.cnblogs.com/-mrl/p/10601817.html
 curl https://get.acme.sh | bash
 
 test -d /etc/nginx/ssl
