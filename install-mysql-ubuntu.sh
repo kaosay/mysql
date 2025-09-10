@@ -13,4 +13,4 @@ GRANT ALL PRIVILEGES ON *.* TO 'u_zuling'@'%' WITH GRANT OPTION;
 
 -----------------------------
 vim /etc/mysql/mysql.conf.d/mysqld.cnf
-mysqlx-bind-address     = 192.168.1.1
+bind-address     = 192.168.1.1
