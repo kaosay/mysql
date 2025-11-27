@@ -1,0 +1,72 @@
+# docker-compose.yml   （生产专用，建议命名为 compose.prod.yml）
+version: "3.9"
+
+services:
+  mysql:
+    image: mysql:8.0.39                  # 固定小版本，升级前先测
+    container_name: mysql-prod
+    restart: unless-stopped
+    command: >
+      --default-authentication-plugin=mysql_native_password
+      --character-set-server=utf8mb4
+      --collation-server=utf8mb4_unicode_ci
+      --sql-mode=STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION
+      --max-connections=10000
+      --innodb-buffer-pool-size=4G        # 根据你的内存调整（建议占机器 60~70%）
+      --innodb-log-file-size=512M
+      --innodb-flush-log-at-trx-commit=1  # 生产推荐 1（最安全）
+      --sync-binlog=1                     # 生产推荐开启
+    environment:
+      MYSQL_ROOT_PASSWORD: 12345
+      MYSQL_DATABASE: game
+      MYSQL_USER: tom
+      MYSQL_PASSWORD: 123
+    ports:
+      - "23306:3306"                         # 生产建议只在内网暴露，不要直接暴露公网
+    volumes:
+      - mysql-data:/var/lib/mysql           # 数据持久化
+      - ./conf:/etc/mysql/conf.d   # 自定义配置（后面给你示例）
+      - ./logs:/var/log
+      - ./backups:/backups                  # 备份目录
+      - /etc/localtime:/etc/localtime:ro    # 时区同步
+    deploy:                                 # 生产强限制资源（防止 OOM）
+      resources:
+        limits:
+          cpus: "8.0"
+          memory: 8G
+        reservations:
+          #memory: 6G
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+      start_period: 30s
+
+  # 自动备份（每天凌晨 3:30）
+  mysql-backup:
+    image: mysql:8.0.39
+    depends_on:
+      mysql:
+        condition: service_healthy
+    volumes:
+      - ./backups:/backups
+      - mysql-data:/var/lib/mysql:ro        # 只读挂载，防止误删
+    environment:
+      MYSQL_HOST: mysql
+      MYSQL_USER: root
+      MYSQL_PASSWORD: 12345
+    entrypoint: >
+      /bin/sh -c "
+      echo '0 3 * * * root mysqldump --single-transaction --routines --triggers -h mysql -u root -p12345 --all-databases | gzip > /backups/full_backup_$(date +\%F).sql.gz' > /etc/crontabs/root;
+      crond -f;
+      "
+
+# 具名卷（数据永不丢失）
+volumes:
+  mysql-data:
+    driver: local
+    driver_opts:
+      type: none
+      device: ./data               # 生产强烈建议绑定宿主机目录（SSD 最好）
+      o: bind
