@@ -3,7 +3,7 @@ version: "3.9"
 
 services:
   mysql:
-    image: mysql:8.0.39                  # 固定小版本，升级前先测
+    image: docker.1ms.run/mysql:8.0.39                  # 固定小版本，升级前先测
     container_name: mysql-prod
     restart: unless-stopped
     command: >
@@ -34,7 +34,7 @@ services:
         limits:
           cpus: "8.0"
           memory: 8G
-        reservations:
+        #reservations:
           #memory: 6G
     healthcheck:
       test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
@@ -45,7 +45,7 @@ services:
 
   # 自动备份（每天凌晨 3:30）
   mysql-backup:
-    image: mysql:8.0.39
+    image: docker.1ms.run/mysql:8.0.39
     depends_on:
       mysql:
         condition: service_healthy
