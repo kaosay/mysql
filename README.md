@@ -24,3 +24,8 @@ sudo apt install mariadb-server mariadb-client -y
 # If you want to be 100% sure you get exactly 11.8.5 (in case newer 11.8.x exists):
 # sudo apt install mariadb-server=1:11.8.5+maria~${UBUNTU_CODENAME} mariadb-client=1:11.8.5+maria~${UBUNTU_CODENAME} -y
 ```
+
+## Backup mysql
+```
+mysqldump --all-databases --ignore-database=mysql > bak.sql
+```
