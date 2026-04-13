@@ -5,6 +5,8 @@ sudo apt install mysql-server
 
 mysql_secure_installation
 
+# get random password from openssl
+openssl rand -base64 12
 
 mysql -uroot -p
 CREATE USER 'u_zuling'@'%' IDENTIFIED BY '123';
