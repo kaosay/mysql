@@ -1,4 +1,5 @@
 #!/bin/bash
+# This script is for backup mysql database in docker
 # mysql-backup.sh
 
 #-- create msyql bakcup user，access localhost
