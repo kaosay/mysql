@@ -6,7 +6,7 @@
 # CREATE USER 'backup_user'@'localhost' IDENTIFIED BY 'dafds12312fdsfds21';
 # GRANT PROCESS, SELECT, SHOW VIEW, TRIGGER, LOCK TABLES ON *.* TO 'backup_user'@'localhost';
 
-# 58 23 * * * /root/autobak-sql/mysql-backup.sh >> /root/autobak-sql/backup.log 2>&1
+# 58 23 * * * /yourBackupDirectory/autobak-sql/mysql-backup.sh >> /yourBackupDirectory/autobak-sql/backup.log 2>&1
 
 # ========== 配置区域 ==========
 ##DUMP_CMD="mariadb-dump"
