@@ -1,6 +1,6 @@
 services:
   mysql8:
-    image: mysql:8.0-utf8
+    image: mysql:8.0
     container_name: mysql
     cpus: 1.0
     mem_limit: 2g
