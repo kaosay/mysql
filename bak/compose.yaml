@@ -1,0 +1,17 @@
+services:
+  mysql-db:
+    container_name: mysql
+    image: docker.1ms.run/mysql:8.0
+    ports:
+      - "3306:3306"
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: 12345
+    volumes:
+      - "./data:/var/lib/mysql"
+      - "./conf:/etc/mysql/conf.d"
+    deploy:
+      resources:
+        limits:
+          cpus: "10.0"
+          memory: 8G
