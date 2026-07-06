@@ -54,7 +54,8 @@ SET GLOBAL log_queries_not_using_indexes = 'ON';
 #### 删除某个文件之前的所有binlog日志：
 ```
 SHOW BINARY LOGS;
-PURGE BINARY LOGS TO 'mysql-bin.010';
+
+PURGE BINARY LOGS TO 'binlog.000301';
 ```
 #### 删除某个时间点之前的所有日志：
 ````
